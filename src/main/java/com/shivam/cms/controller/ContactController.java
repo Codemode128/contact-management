@@ -35,6 +35,8 @@ public class ContactController {
     @Value("${clientsecret}")
     private String client_secret;
 
+    @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
+    private String issuerUrl;
 
     @GetMapping("/authenticate")
     public ResponseEntity<?> login(){
@@ -47,7 +49,7 @@ public class ContactController {
         map.put("grant_type","client_credentials");
         HttpEntity<Map<String, String>> request = new HttpEntity<>(map, headers);
         ResponseEntity<String> response = restTemplate.exchange(
-                "https://dev-giudnqk2.us.auth0.com/oauth/token",  HttpMethod.POST, request , String.class);
+                issuerUrl,  HttpMethod.POST, request , String.class);
         return new ResponseEntity<>(response.getBody(),HttpStatus.OK);
     }
     @GetMapping("/contacts")
