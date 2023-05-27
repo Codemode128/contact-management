@@ -6,11 +6,13 @@ import com.shivam.cms.utils.Response;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/cms")
@@ -19,8 +21,33 @@ public class ContactController {
     @Autowired
     ContactService contactService;
 
-    @Value("${algorithm}")
-    private String property;
+    @Autowired
+    RestTemplate restTemplate;
+
+    @Value("${auth0.audience}")
+    private String audience;
+
+    @Value("${clientid}")
+    private String client_id;
+
+    @Value("${clientsecret}")
+    private String client_secret;
+
+
+    @GetMapping("/authenticate")
+    public ResponseEntity<?> login(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        Map<String, String> map= new HashMap<>();
+        map.put("client_id", client_id);
+        map.put("client_secret",client_secret);
+        map.put("audience",audience);
+        map.put("grant_type","client_credentials");
+        HttpEntity<Map<String, String>> request = new HttpEntity<>(map, headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                "https://dev-giudnqk2.us.auth0.com/oauth/token",  HttpMethod.POST, request , String.class);
+        return new ResponseEntity<>(response.getBody(),HttpStatus.OK);
+    }
     @GetMapping("/contacts")
     public ResponseEntity<?> getContacts(){
         List<ContactDTO> contacts = contactService.findAllContacts();

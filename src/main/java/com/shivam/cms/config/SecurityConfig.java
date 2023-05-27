@@ -11,7 +11,6 @@ import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.net.http.HttpRequest;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -27,7 +26,7 @@ public class SecurityConfig{
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
         return httpSecurity.csrf(csrf->csrf.disable()).authorizeHttpRequests(
-                auth-> auth.requestMatchers("/cms/contacts")
+                auth-> auth.requestMatchers("/cms/authenticate")
                         .permitAll()
                         .anyRequest()
                         .authenticated())
@@ -38,10 +37,6 @@ public class SecurityConfig{
 
     @Bean
     JwtDecoder jwtDecoder() {
-        /*
-        By default, Spring Security does not validate the "aud" claim of the token, to ensure that this token is
-        indeed intended for our app. Adding our own validator is easy to do:
-        */
 
         NimbusJwtDecoder jwtDecoder = (NimbusJwtDecoder)
                 JwtDecoders.fromOidcIssuerLocation(issuer);
