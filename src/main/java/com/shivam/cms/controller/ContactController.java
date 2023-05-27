@@ -3,6 +3,8 @@ package com.shivam.cms.controller;
 import com.shivam.cms.dto.ContactDTO;
 import com.shivam.cms.service.ContactService;
 import com.shivam.cms.utils.Response;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,6 +51,7 @@ public class ContactController {
         return new ResponseEntity<>(response.getBody(),HttpStatus.OK);
     }
     @GetMapping("/contacts")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<?> getContacts(){
         List<ContactDTO> contacts = contactService.findAllContacts();
         if(contacts.size()==0)
@@ -57,6 +60,7 @@ public class ContactController {
     }
 
     @GetMapping("/contacts/{id}")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<ContactDTO> getContact(@PathVariable Integer id){
         ContactDTO contact = null;
         contact = contactService.findContact(id);
@@ -64,35 +68,41 @@ public class ContactController {
     }
 
     @GetMapping("/contacts/email")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<List<ContactDTO>> getContactByEmail(@RequestParam String email){
         List<ContactDTO> contacts = contactService.findContactByEmail(email);
         return new ResponseEntity<>(contacts,HttpStatus.OK);
     }
     @GetMapping("/contacts/firstName")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<List<ContactDTO>> getContactByFirstName(@RequestParam String firstName){
         List<ContactDTO> contacts = contactService.findContactByFirstName(firstName);
         return new ResponseEntity<>(contacts,HttpStatus.OK);
     }
 
     @GetMapping("/contacts/lastName")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<List<ContactDTO>> getContactByLastName(@RequestParam String lastName){
         List<ContactDTO> contacts = contactService.findContactByLastName(lastName);
         return new ResponseEntity<>(contacts,HttpStatus.OK);
     }
 
     @PostMapping("/add")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<ContactDTO> addContact(@Valid @RequestBody ContactDTO contactDto){
         ContactDTO contact = contactService.addContact(contactDto);
         return new ResponseEntity<>(contact, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<?> updateContact(@PathVariable Integer id, @RequestBody ContactDTO contactDTO){
         ContactDTO contact = contactService.updateContact(contactDTO,id);
         return new ResponseEntity<>(contact,HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<?> deleteContact(@PathVariable Integer id){
         ContactDTO contact = contactService.deleteContact(id);
         return new ResponseEntity<>(contact,HttpStatus.OK);

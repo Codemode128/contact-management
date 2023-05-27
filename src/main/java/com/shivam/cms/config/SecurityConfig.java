@@ -26,7 +26,7 @@ public class SecurityConfig{
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
         return httpSecurity.csrf(csrf->csrf.disable()).authorizeHttpRequests(
-                auth-> auth.requestMatchers("/cms/authenticate")
+                auth-> auth.requestMatchers("/cms/authenticate","/swagger-ui/**","/v3/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated())
