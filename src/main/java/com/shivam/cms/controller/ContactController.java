@@ -38,10 +38,10 @@ public class ContactController {
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String issuerUrl;
 
-    @GetMapping("/authenticate")
-    public ResponseEntity<?> login(){
+    @GetMapping(value = "/authenticate",produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody ResponseEntity<?> login(){
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+       // headers.setContentType(MediaType.APPLICATION_JSON);
         Map<String, String> map= new HashMap<>();
         map.put("client_id", client_id);
         map.put("client_secret",client_secret);
@@ -49,7 +49,7 @@ public class ContactController {
         map.put("grant_type","client_credentials");
         HttpEntity<Map<String, String>> request = new HttpEntity<>(map, headers);
         ResponseEntity<String> response = restTemplate.exchange(
-                issuerUrl,  HttpMethod.POST, request , String.class);
+                issuerUrl+"/oauth/token",  HttpMethod.POST, request , String.class);
         return new ResponseEntity<>(response.getBody(),HttpStatus.OK);
     }
     @GetMapping("/contacts")
